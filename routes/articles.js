@@ -17,22 +17,22 @@ router.post("/createPost", async (req, res) => {
         product.location = body.location;
         product.timestamp = body.timestamp;
 
-        let base64image = body.userImage;
-        console.log("product.imagepath", product)
+        product.userImage = body.userImage;
+        // console.log("product.imagepath", product)
 
-        if (base64image) {
+        // if (base64image) {
 
-            const randomname = (Math.random() + 1).toString(36).substring(7);
-            const imageData = base64image.replace(/^data:image\/\w+;base64,/, '');
-            const imageBuffer = Buffer.from(imageData, 'base64');
-            product.userImage = `articles/${randomname}.jpg`;
-            fs.writeFile(`assets/${product.userImage}`, imageBuffer, (err) => {
-                if (err) {
-                    console.log('Error while saving image:', err);
-                    return res.status(500).json({ status: 'failed', data: 'Failed to save image' });
-                }
-            });
-        }
+        //     const randomname = (Math.random() + 1).toString(36).substring(7);
+        //     const imageData = base64image.replace(/^data:image\/\w+;base64,/, '');
+        //     const imageBuffer = Buffer.from(imageData, 'base64');
+        //     product.userImage = `articles/${randomname}.jpg`;
+        //     fs.writeFile(`assets/${product.userImage}`, imageBuffer, (err) => {
+        //         if (err) {
+        //             console.log('Error while saving image:', err);
+        //             return res.status(500).json({ status: 'failed', data: 'Failed to save image' });
+        //         }
+        //     });
+        // }
         product.save().then(result => {
             res.end(JSON.stringify({ status: "success", data: result }));
         }, err => {
@@ -52,13 +52,13 @@ router.get('/posts', async (req, res) => {
         // Fetch all posts from your database
         const posts = await Product.find();
 
-        const usersWithImages = posts.map(user => {
-            const userWithImage = user.toJSON();
-            userWithImage.userImage = `http://localhost:3000/${user.userImage}`;
-            return userWithImage;
-        });
-
-        res.json({ status: 'success', data: usersWithImages });
+        // const usersWithImages = posts.map(user => {
+        //     const userWithImage = user.toJSON();
+        //     userWithImage.userImage = `http://localhost:3000/${user.userImage}`;
+        //     return userWithImage;
+        // });
+        // res.json({ status: 'success', data: usersWithImages });
+        res.json({ status: 'success', data: posts });
     } catch (error) {
         console.error('Error fetching all posts:', error);
         res.status(500).json({ status: 'error', message: 'Error fetching all posts' });
@@ -168,7 +168,7 @@ router.post('/posts/:postId/comment', async (req, res) => {
         // Find the post by postId
         const post = await Product.findById(postId);
 
-        console.log("comment", post)
+        // console.log("comment", post)
 
         if (!post) {
             return res.status(404).json({ error: 'Post not found' });

@@ -13,21 +13,23 @@ router.post("/register", async (req, res) => {
     user.name = body.name;
     user.email = body.email;
     user.password = body.password;
-    let base64image = body.profilePic;
-    console.log("base64image",body.profilePic, base64image);
+    user.profilePic = body.profilePic;
+
+    // let base64image = body.profilePic;
+    // console.log("base64image",body.profilePic, base64image);
     
-    if (base64image) {
-      const randomname = (Math.random() + 1).toString(36).substring(7);
-      const imageData = base64image.replace(/^data:image\/\w+;base64,/, '');
-      const imageBuffer = Buffer.from(imageData, 'base64');
-      user.profilePic = `profilePic/${randomname}.jpg`;
-      fs.writeFile(`assets/${user.profilePic}`, imageBuffer, (err) => {
-        if (err) {
-          console.log('Error while saving image:', err);
-          return res.status(500).json({ status: 'failed', data: 'Failed to save image' });
-        }
-      });
-    }
+    // if (base64image) {
+    //   const randomname = (Math.random() + 1).toString(36).substring(7);
+    //   const imageData = base64image.replace(/^data:image\/\w+;base64,/, '');
+    //   const imageBuffer = Buffer.from(imageData, 'base64');
+    //   user.profilePic = `profilePic/${randomname}.jpg`;
+    //   fs.writeFile(`assets/${user.profilePic}`, imageBuffer, (err) => {
+    //     if (err) {
+    //       console.log('Error while saving image:', err);
+    //       return res.status(500).json({ status: 'failed', data: 'Failed to save image' });
+    //     }
+    //   });
+    // }
 
     console.log(user, user.profilePic);
     user.save().then(result => {
@@ -79,12 +81,14 @@ router.get('/list', async (req, res) => {
     const users = await User.find(); // Fetch all users from the database
 
     // Modify each user object to include the image URL relative to the 'uploads' folder
-    const usersWithImages = users.map(user => {
-      const userWithImage = user.toJSON();
-      userWithImage.profilePic = `http://localhost:3000/${user.profilePic}`;
-      return userWithImage;
-    });
-    res.status(200).json(usersWithImages);
+    // const usersWithImages = users.map(user => {
+    //   const userWithImage = user.toJSON();
+    //   userWithImage.profilePic = `http://localhost:3000/${user.profilePic}`;
+    //   return userWithImage;
+    // });
+    // res.status(200).json(usersWithImages);
+    res.status(200).json(users);
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
